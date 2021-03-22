@@ -45,8 +45,6 @@ public class ChessMatch {
 	}
 	
 	public ChessPiece[][] getPieces() {
-		// esse método irá retornar uma matriz de pecas de xadrez correspondentes à partida
-		// foi importande adicionar o Downcasting para ChessPiece para evitar que se acesse as pecas gerais
 		ChessPiece[][] mat = new ChessPiece[board.getRows()][board.getColumns()];
 		for (int i=0 ; i<board.getRows() ; i++) {
 			for (int j=0 ; j<board.getColumns() ; j++) {
@@ -62,8 +60,6 @@ public class ChessMatch {
 		return board.piece(position).possibleMoves();
 	}
 	
-	
-	
 	public ChessPiece performChessMove(ChessPosition sourcePosition, ChessPosition targetPosition) {
 		Position source = sourcePosition.toPosition();
 		Position target = targetPosition.toPosition();
@@ -71,32 +67,33 @@ public class ChessMatch {
 		validateTargetPosition(source, target);
 		Piece capturedPiece = makeMove(source,target);		
 			
-			if(testCheck(currentPlayer)) {
-				undoMove(source,target,capturedPiece);
-				throw new ChessException ("You can't put yourself in check");
-			}		
-			
-			check = (testCheck(opponent(currentPlayer))) ? true : false;		
-			
-			if (testCheckMate(opponent(currentPlayer))) {
-				checkMate = true;
-			}
-			
-			else { 
-				nextTurn();
-			}		
-			
-			return (ChessPiece) capturedPiece;	
+		if(testCheck(currentPlayer)) {
+			undoMove(source,target,capturedPiece);
+			throw new ChessException ("You can't put yourself in check");
+		}		
+		
+		check = (testCheck(opponent(currentPlayer))) ? true : false;		
+		
+		if (testCheckMate(opponent(currentPlayer))) {
+			checkMate = true;
+		}		
+		else { 
+			nextTurn();
+		}		
+		
+		return (ChessPiece) capturedPiece;	
 	}	
 	
 	private Piece makeMove(Position source, Position target) {
 		Piece p = board.removePiece(source);
 		Piece capturedPiece = board.removePiece(target);
 		board.placePiece(p, target);
+		
 		if (capturedPiece != null) {
 			piecesOnTheBoard.remove(capturedPiece);
 			capturedPieces.add(capturedPiece);
-		}		
+		}	
+		
 		return capturedPiece;
 	}
 	
@@ -104,6 +101,7 @@ public class ChessMatch {
 		Piece p = board.removePiece(target);
 		board.placePiece(p, source);
 		if (capturedPiece != null) {
+			board.placePiece(capturedPiece, target);
 			capturedPieces.remove(capturedPiece);
 			piecesOnTheBoard.add(capturedPiece);
 		}	
@@ -162,7 +160,7 @@ public class ChessMatch {
 		if (!testCheck(color)) {
 			return false;
 		}
-		List<Piece> list = piecesOnTheBoard.stream().filter(x -> ((ChessPiece)x).getColor() == opponent(color)).collect(Collectors.toList());
+		List<Piece> list = piecesOnTheBoard.stream().filter(x -> ((ChessPiece)x).getColor() == color).collect(Collectors.toList());
 		for (Piece p : list) {
 			boolean[][] mat = p.possibleMoves();
 			for (int i = 0; i < board.getRows(); i++) {
