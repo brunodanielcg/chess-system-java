@@ -10,16 +10,10 @@ public class Pawn extends ChessPiece {
 
 	private ChessMatch chessMatch;
 	
-	
 	public Pawn(Board board, Color color, ChessMatch chessMatch) {
 		super(board, color);
 		this.chessMatch = chessMatch;
 	}
-
-	@Override	
-	public String toString() {
-		return "P";
-	}	
 	
 	@Override
 	public boolean[][] possibleMoves() {
@@ -57,9 +51,7 @@ public class Pawn extends ChessPiece {
 				if (getBoard().positionExists(right) && isThereOpponentPiece(right) && getBoard().piece(right) == chessMatch.getEnPassantVulnerable());
 				mat[right.getRow()-1][right.getColumn()] = true;
 			}
-			return mat;
-		}
-		
+		}		
 		else {		
 			p.setValues(position.getRow() + 2, position.getColumn());
 			Position p2 = new Position (position.getRow() + 1, position.getColumn());
@@ -89,10 +81,15 @@ public class Pawn extends ChessPiece {
 				if (getBoard().positionExists(right) && isThereOpponentPiece(right) && getBoard().piece(right) == chessMatch.getEnPassantVulnerable());
 				mat[right.getRow()+1][right.getColumn()] = true;
 			}
-		}	
-		return mat;
-		
+		}
+		return mat;		
 	}
+
+
+	@Override	
+	public String toString() {
+		return "P";
+	}	
 	
 
 }
